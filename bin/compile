@@ -54,6 +54,14 @@ if [ -n "$(cat $PROJECT_FILE | grep 'netcoreapp2.0')" ]; then
 	echo "More info https://github.com/jincod/dotnetcore-buildpack/issues/44" | indent
 fi
 export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
+BUILD_CONFIG=${BUILD_CONFIG:-Release}
+
+echo "build ${PROJECT_FILE}"
+dotnet build $PROJECT_FILE --configuration ${BUILD_CONFIG}
+
+if [ ${BUILD_PUBLISH:-true} = "false" ]; then
+	exit 0
+fi
 
 echo "publish ${PROJECT_FILE} for ${BUILD_CONFIGURATION}"
 dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
