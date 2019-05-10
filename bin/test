@@ -28,4 +28,4 @@ fi
 
 echo "run tests in ${TEST_PROJECT_FILE}"
 
-dotnet test -v q --no-build --no-restore --logger:tap $TEST_PROJECT_FILE
+dotnet test -v q --no-build --no-restore $TEST_PROJECT_FILE
