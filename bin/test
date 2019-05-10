@@ -24,4 +24,9 @@ export PATH="${DOTNET_SDK_LOCATION}:${PATH}"
 
 cd $BUILD_DIR
 
-dotnet test -v q --no-build --no-restore
+echo "BUILD_DIR is ${BUILD_DIR}"
+echo "ENV_DIR is ${ENV_DIR}"
+echo "TEST_PROJECT_FILE is ${TEST_PROJECT_FILE:nonez}"
+echo "FOOBAR is ${FOOBAR:nonez}"
+
+dotnet test -v q --no-build --no-restore --logger:tap
