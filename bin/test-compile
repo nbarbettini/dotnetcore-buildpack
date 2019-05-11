@@ -14,12 +14,26 @@ BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
 cd $BUILD_DIR
 
-if [ -z ${TEST_PROJECT_FILE:-} ]; then
-	TEST_PROJECT_FILE=$(find ${BUILD_DIR} -maxdepth 5 -name *.csproj -exec grep -l -H 'Microsoft.NET.Test.Sdk' {} \;)
-fi
+find_test_projects $BUILD_DIR
 
-export PROJECT_FILE=${TEST_PROJECT_FILE}
-export BUILD_CONFIG=Debug
-export BUILD_PUBLISH="false"
+echo -e "2Found test projects:\n$TEST_PROJECTS"
 
-$BP_DIR/bin/compile "$1" "$2" "$3"
+# keep track of error codes from all commands
+# (this script must exit with a nonzero error code if ANY command exits with nonzero)
+declare -i EXIT_CODE # == 0
+
+# run each discovered test project
+while IFS= read -r filename
+  do
+    echo "build: $filename"
+
+    export PROJECT_FILE=$filename
+    export BUILD_CONFIG=Debug
+    export BUILD_PUBLISH="false"
+
+    $BP_DIR/bin/compile "$1" "$2" "$3"
+
+    EXIT_CODE+=$?
+done <<< $TEST_PROJECTS
+
+exit $EXIT_CODE

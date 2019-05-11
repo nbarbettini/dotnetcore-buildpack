@@ -55,3 +55,14 @@ export_env_dir() {
     fi
   fi
 }
+
+find_test_projects() {
+  local BUILD_DIR="$1"
+
+  topic "Discovering test projects"
+  TEST_PROJECTS=$(find ${BUILD_DIR} -maxdepth 5 -name *.csproj -exec grep -l -H 'Microsoft.NET.Test.Sdk' {} \; )
+  TEST_PROJECT_COUNT=$(echo "$TEST_PROJECTS" | wc -l)
+  echo -e "Found $TEST_PROJECT_COUNT test projects:\n$TEST_PROJECTS"
+
+  export TEST_PROJECTS=$TEST_PROJECTS
+}

@@ -22,10 +22,20 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=${DOTNET_CLI_TELEMETRY_OPTOUT:-1}
 
 export PATH="${DOTNET_SDK_LOCATION}:${PATH}"
 
-if [ -z ${TEST_PROJECT_FILE:-} ]; then
-	TEST_PROJECT_FILE=$(find ${BUILD_DIR} -maxdepth 5 -name *.csproj -exec grep -l -H 'Microsoft.NET.Test.Sdk' {} \;)
-fi
+find_test_projects $BUILD_DIR
 
-echo "run tests in ${TEST_PROJECT_FILE}"
+echo -e "2Found test projects:\n$TEST_PROJECTS"
 
-dotnet test -v q --no-build --no-restore $TEST_PROJECT_FILE
+# keep track of error codes from all commands
+# (this script must exit with a nonzero error code if ANY command exits with nonzero)
+declare -i EXIT_CODE # == 0
+
+# run each discovered test project
+while IFS= read -r filename
+  do
+    echo "run: $filename"
+    dotnet test -v q --no-build --no-restore --configuration Release $filename
+    EXIT_CODE+=$?
+done <<< $TEST_PROJECTS
+
+exit $EXIT_CODE
