@@ -19,8 +19,6 @@ cd $BUILD_DIR
 
 find_test_projects $BUILD_DIR
 
-echo -e "2Found test projects:\n$TEST_PROJECTS"
-
 # keep track of error codes from all commands
 # (this script must exit with a nonzero error code if ANY command exits with nonzero)
 declare -i EXIT_CODE # == 0
