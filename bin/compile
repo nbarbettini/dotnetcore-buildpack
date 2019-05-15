@@ -57,7 +57,7 @@ export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
 BUILD_CONFIG=${BUILD_CONFIG:-Release}
 
 echo "build ${PROJECT_FILE}"
-dotnet build $PROJECT_FILE --configuration ${BUILD_CONFIG}
+dotnet build $PROJECT_FILE --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}
 
 if [ ${BUILD_PUBLISH:-true} = "false" ]; then
 	exit 0
