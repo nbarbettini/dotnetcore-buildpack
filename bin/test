@@ -32,7 +32,7 @@ declare -i EXIT_CODE # == 0
 while IFS= read -r filename
   do
     echo "run: $filename"
-    dotnet test -v m --no-build --no-restore --configuration Debug $filename
+    dotnet test -v ${BUILD_VERBOSITY:-q} --no-build --no-restore --configuration Debug $filename
     EXIT_CODE+=$?
 done <<< $TEST_PROJECTS
 
