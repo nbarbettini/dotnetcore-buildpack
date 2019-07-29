@@ -37,7 +37,8 @@ echo "Installing dotnet"
 install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
 DOTNET_CACHE_LOCATION=${CACHE_DIR}/dotnet/${DOTNET_SDK_VERSION}
 echo ${DOTNET_CACHE_LOCATION}/sdk > ${ENV_DIR}/DOTNET_SDK_LOCATION
-echo "dotnet installed at ${BUILD_DIR}/.heroku/dotnet"
+echo "dotnet SDK installed at ${DOTNET_CACHE_LOCATION}/sdk"
+echo "dotnet runtime installed at ${BUILD_DIR}/.heroku/dotnet"
 
 export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
 
