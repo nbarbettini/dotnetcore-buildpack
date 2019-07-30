@@ -40,7 +40,7 @@ function install_dotnet() {
   mkdir -p ${BUILD_DIR}/.heroku/dotnet
   cp -r ${DOTNET_CACHE_LOCATION}/runtime ${BUILD_DIR}/.heroku/dotnet
   mkdir -p ${BUILD_DIR}/.heroku/dotnet-sdk
-  cp -r ${DOTNET_CACHE_LOCATION}/sdk/sdk/${DOTNET_SDK_VERSION} ${BUILD_DIR}/.heroku/dotnet-sdk
+  cp -r ${DOTNET_CACHE_LOCATION}/sdk ${BUILD_DIR}/.heroku/dotnet-sdk
 }
 
 export_env_dir() {
