@@ -32,7 +32,7 @@ declare -i EXIT_CODE # == 0
 while IFS= read -r filename
   do
     echo "dotnet test -v ${BUILD_VERBOSITY:-q} --logger ${DOTNET_TEST_LOGGER:-console} --no-build --no-restore --configuration Debug $filename"
-    dotnet test -v ${BUILD_VERBOSITY:-q} --logger ${DOTNET_TEST_LOGGER:-console} --no-build --no-restore --configuration Debug $filename
+    dotnet test -v ${BUILD_VERBOSITY:-q} --logger:${DOTNET_TEST_LOGGER:-console} --no-build --no-restore --configuration Debug $filename
     EXIT_CODE+=$?
 done <<< $TEST_PROJECTS
 
