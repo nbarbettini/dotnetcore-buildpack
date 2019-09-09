@@ -65,7 +65,7 @@ if [ ${BUILD_PUBLISH:-true} = "false" ]; then
 	exit 0
 fi
 
-echo "publish ${PROJECT_FILE} for ${BUILD_CONFIGURATION}"
+echo "dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
 dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
