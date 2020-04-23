@@ -47,10 +47,13 @@ BUILD_CONFIG=${BUILD_CONFIG:-Release}
 cd $BUILD_DIR
 
 if [ -z ${PROJECT_FILE:-} ]; then
+	echo "No PROJECT_FILE specified, looking for web projects..."
 	PROJECT_FILE=$(x=$(dirname $(find ${BUILD_DIR} -maxdepth 5 -iname Startup.cs -o -iname Program.cs | head -1)); while [[ "$x" =~ $BUILD_DIR ]] ; do find "$x" -maxdepth 1 -name *.csproj; x=`dirname "$x"`; done)
 fi
 
 PROJECTS_TO_BUILD=$(echo $PROJECT_FILE | tr ";" "\n")
+
+printf "%s\n"  "${PROJECTS_TO_BUILD[@]}"
 
 for proj in $PROJECTS_TO_BUILD
 do
