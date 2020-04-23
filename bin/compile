@@ -74,8 +74,8 @@ for proj in $PROJECTS_TO_BUILD
 do
 	PROJECT_NAME=$(basename ${proj%.*})
 
-	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
+	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
 
@@ -86,6 +86,6 @@ else
 	first_project_name=$(basename ${proj[0]%.*})
 	echo "Add web process to Procfile $first_project_name" | indent
 	cat << EOT >> ${BUILD_DIR}/Procfile
-web: cd \$HOME/heroku_output && ./${PROJECT_NAME}
+web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}
 EOT
 fi
