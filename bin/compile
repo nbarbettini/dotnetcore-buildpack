@@ -59,11 +59,6 @@ for proj in $PROJECTS_TO_BUILD
 do
 	echo "dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}"
 	dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}
-
-	PROJECT_NAME=$(basename ${proj%.*})
-
-	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
 if [ ${BUILD_PUBLISH:-true} = "false" ]; then
