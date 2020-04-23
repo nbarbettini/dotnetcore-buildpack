@@ -66,6 +66,19 @@ do
 	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
+if [ ${BUILD_PUBLISH:-true} = "false" ]; then
+	exit 0
+fi
+
+for proj in $PROJECTS_TO_BUILD
+do
+	PROJECT_NAME=$(basename ${proj%.*})
+
+	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
+	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+done
+
+
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
 	topic "WARNING"
 	echo "Be careful with custom Procfile" | indent
