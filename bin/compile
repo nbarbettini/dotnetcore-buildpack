@@ -41,39 +41,46 @@ echo "dotnet SDK installed at ${DOTNET_CACHE_LOCATION}/sdk"
 echo "dotnet runtime installed at ${BUILD_DIR}/.heroku/dotnet"
 
 export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
+export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
+BUILD_CONFIG=${BUILD_CONFIG:-Release}
 
 cd $BUILD_DIR
 
 if [ -z ${PROJECT_FILE:-} ]; then
+	echo "No PROJECT_FILE specified, looking for web projects..."
 	PROJECT_FILE=$(x=$(dirname $(find ${BUILD_DIR} -maxdepth 5 -iname Startup.cs -o -iname Program.cs | head -1)); while [[ "$x" =~ $BUILD_DIR ]] ; do find "$x" -maxdepth 1 -name *.csproj; x=`dirname "$x"`; done)
 fi
-if [ -z ${PROJECT_NAME:-} ]; then
-	PROJECT_NAME=$(basename ${PROJECT_FILE%.*})
-fi
-if [ -n "$(cat $PROJECT_FILE | grep 'netcoreapp2.0')" ]; then
-	topic "WARNING"
-	echo "For netcoreapp2.0 use https://github.com/jincod/dotnetcore-buildpack#v2.1.200" | indent
-	echo "More info https://github.com/jincod/dotnetcore-buildpack/issues/44" | indent
-fi
-export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
-BUILD_CONFIG=${BUILD_CONFIG:-Release}
 
-echo "dotnet build $PROJECT_FILE --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}}"
-dotnet build $PROJECT_FILE --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}
+PROJECTS_TO_BUILD=$(echo $PROJECT_FILE | tr ";" "\n")
+
+printf "%s\n"  "${PROJECTS_TO_BUILD[@]}"
+
+for proj in $PROJECTS_TO_BUILD
+do
+	echo "dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}"
+	dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}
+done
 
 if [ ${BUILD_PUBLISH:-true} = "false" ]; then
 	exit 0
 fi
 
-echo "dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-dotnet publish $PROJECT_FILE --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+for proj in $PROJECTS_TO_BUILD
+do
+	PROJECT_NAME=$(basename ${proj%.*})
+
+	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
+	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+done
+
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
 	topic "WARNING"
 	echo "Be careful with custom Procfile" | indent
 else
-	echo "Add web process to Procfile" | indent
+	first_project_name=$(basename ${proj[0]%.*})
+	echo "Add web process to Procfile $first_project_name" | indent
 	cat << EOT >> ${BUILD_DIR}/Procfile
-web: cd \$HOME/heroku_output && ./${PROJECT_NAME}
+web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}
 EOT
 fi
