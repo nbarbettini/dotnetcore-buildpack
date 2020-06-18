@@ -42,7 +42,6 @@ echo "dotnet runtime installed at ${BUILD_DIR}/.heroku/dotnet"
 
 export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
 export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
-BUILD_CONFIG=${BUILD_CONFIG:-Release}
 
 cd $BUILD_DIR
 
@@ -57,8 +56,8 @@ printf "%s\n"  "${PROJECTS_TO_BUILD[@]}"
 
 for proj in $PROJECTS_TO_BUILD
 do
-	echo "dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}"
-	dotnet build $proj --configuration ${BUILD_CONFIG} -v ${BUILD_VERBOSITY:-q}
+	echo "dotnet build $proj --configuration ${BUILD_CONFIGURATION} -v ${BUILD_VERBOSITY:-q}"
+	dotnet build $proj --configuration ${BUILD_CONFIGURATION} -v ${BUILD_VERBOSITY:-q}
 done
 
 if [ ${BUILD_PUBLISH:-true} = "false" ]; then
@@ -78,8 +77,8 @@ if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	if [ -z "${SLN}" ]; then
 		echo "No solution found to clean"
 	else
-		echo "dotnet clean $SLN -v q"
-		dotnet clean $SLN -v q
+		echo "dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q"
+		dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q
 	fi
 fi
 
