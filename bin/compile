@@ -70,8 +70,7 @@ do
 	PROJECT_NAME=$(basename ${proj%.*})
 
 	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime ubuntu-x64 --self-contained
-	chmod +x ${BUILD_DIR}/heroku_output/${PROJECT_NAME}
+	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
@@ -83,6 +82,9 @@ if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 		dotnet clean $SLN -v q
 	fi
 fi
+
+echo "Cleanup dotnet SDK"
+cleanup_dotnet $BUILD_DIR
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
 	topic "WARNING"

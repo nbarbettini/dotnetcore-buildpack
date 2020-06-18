@@ -68,3 +68,9 @@ find_test_projects() {
 
   export TEST_PROJECTS=$TEST_PROJECTS
 }
+
+function cleanup_dotnet() {
+  local BUILD_DIR="$1"
+  rm -rf /app/dotnet
+  rm -rf ${BUILD_DIR}/.heroku/dotnet
+}
