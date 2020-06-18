@@ -73,6 +73,10 @@ do
 	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
+if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
+	echo "Cleaning solution"
+	dotnet clean -v q
+fi
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
 	topic "WARNING"
