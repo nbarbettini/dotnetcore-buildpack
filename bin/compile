@@ -70,7 +70,8 @@ do
 	PROJECT_NAME=$(basename ${proj%.*})
 
 	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+	dotnet publish $proj --output ${BUILD_DIR}/heroku_output --configuration ${BUILD_CONFIGURATION} --runtime ubuntu-x64 --self-contained
+	chmod +x ${BUILD_DIR}/heroku_output/${PROJECT_NAME}
 done
 
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
@@ -78,7 +79,7 @@ if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	if [ -z "${SLN}" ]; then
 		echo "No solution found to clean"
 	else
-		echo "Cleaning solution"
+		echo "dotnet clean $SLN -v q"
 		dotnet clean $SLN -v q
 	fi
 fi
