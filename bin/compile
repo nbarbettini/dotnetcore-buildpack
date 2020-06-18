@@ -79,6 +79,9 @@ if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	else
 		echo "dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q"
 		dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q
+		
+		echo "dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v q"
+		dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v q
 	fi
 fi
 
