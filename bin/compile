@@ -76,10 +76,10 @@ done
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	SLN=$(find "${BUILD_DIR}" -maxdepth 2 -name *.sln | head -1)
 	if [ -z "${SLN}" ]; then
+		echo "No solution found to clean"
+	else
 		echo "Cleaning solution"
 		dotnet clean $SLN -v q
-	else
-		echo "No solution found to clean"
 	fi
 fi
 
