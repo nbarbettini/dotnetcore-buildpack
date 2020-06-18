@@ -74,8 +74,13 @@ do
 done
 
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
-	echo "Cleaning solution"
-	dotnet clean -v q
+	SLN=$(find "${BUILD_DIR}" -maxdepth 2 -name *.sln | head -1)
+	if [ -z "${SLN}" ]; then
+		echo "Cleaning solution"
+		dotnet clean $SLN -v q
+	else
+		echo "No solution found to clean"
+	fi
 fi
 
 if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
