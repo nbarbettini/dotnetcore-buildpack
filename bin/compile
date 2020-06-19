@@ -94,7 +94,5 @@ if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile && [ ${
 else
 	first_project_name=$(basename ${proj[0]%.*})
 	echo "Add web process to Procfile $first_project_name" | indent
-	cat << EOT >> ${BUILD_DIR}/Procfile
-web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}
-EOT
+	echo -e "web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}\n$(cat ${BUILD_DIR}/Procfile)" > ${BUILD_DIR}/Procfile
 fi
