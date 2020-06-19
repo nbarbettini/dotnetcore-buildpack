@@ -79,7 +79,7 @@ if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	else
 		echo "dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q"
 		dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} -v q
-		
+
 		echo "dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v q"
 		dotnet clean $SLN --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v q
 	fi
@@ -88,7 +88,7 @@ fi
 echo "Cleanup dotnet SDK"
 cleanup_dotnet $BUILD_DIR
 
-if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile ; then
+if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile && [ ${PROJECT_FILE_OVERRIDES_PROCFILE:-false} = "false" ] ; then
 	topic "WARNING"
 	echo "Be careful with custom Procfile" | indent
 else
