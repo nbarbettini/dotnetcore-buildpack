@@ -56,8 +56,8 @@ printf "%s\n"  "${PROJECTS_TO_BUILD[@]}"
 
 for proj in $PROJECTS_TO_BUILD
 do
-	echo "dotnet build $proj --configuration ${BUILD_CONFIGURATION} -v ${BUILD_VERBOSITY:-q}"
-	dotnet build $proj --configuration ${BUILD_CONFIGURATION} -v ${BUILD_VERBOSITY:-q}
+	echo "dotnet build $proj --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v ${BUILD_VERBOSITY:-q}"
+	dotnet build $proj --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v ${BUILD_VERBOSITY:-q}
 done
 
 if [ ${BUILD_PUBLISH:-true} = "false" ]; then
@@ -68,8 +68,8 @@ for proj in $PROJECTS_TO_BUILD
 do
 	PROJECT_NAME=$(basename ${proj%.*})
 
-	echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+	echo "dotnet publish $proj --no-restore --no-build --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
+	dotnet publish $proj --no-restore --no-build --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
 done
 
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
