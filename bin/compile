@@ -12,6 +12,11 @@ if [ "$STACK" != "heroku-16" ] && [ "$STACK" != "heroku-18" ]; then
 	exit 1
 fi
 
+if [ -z "${PROCFILE_PATH}" ]; then
+	echo "PROCFILE_PATH is required. Set environment variable in the heroku app."
+	exit 1
+fi
+
 ### Configure directories
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
@@ -24,7 +29,7 @@ cp $BP_DIR/profile/* $BUILD_DIR/.profile.d/
 ### Load dependencies
 source $BP_DIR/lib/utils
 
-export_env_dir "$ENV_DIR"
+export_env_dir ${ENV_DIR}
 export NUGET_XMLDOC_MODE=${NUGET_XMLDOC_MODE:-skip}
 export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=${DOTNET_SKIP_FIRST_TIME_EXPERIENCE:-1}
 export DOTNET_CLI_TELEMETRY_OPTOUT=${DOTNET_CLI_TELEMETRY_OPTOUT:-1}
@@ -32,7 +37,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=${DOTNET_CLI_TELEMETRY_OPTOUT:-1}
 DOTNET_SDK_VERSION=${DOTNET_SDK_VERSION:-3.1.407}
 DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-3.1.13}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
-PROCFILE_PATH=${PROCFILE_PATH:-${BUILD_DIR}/Procfile}
 
 echo "Installing dotnet"
 install_dotnet $BUILD_DIR $CACHE_DIR $DOTNET_SDK_VERSION $DOTNET_RUNTIME_VERSION
@@ -45,6 +49,11 @@ export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
 export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
 
 cd $BUILD_DIR
+
+if [ -f ${PROCFILE_PATH} ]; then
+	echo "${PROCFILE_PATH} file does not exist. Please add it to repo."
+	exit 1
+fi
 
 if [ -z ${PROJECT_FILE:-} ]; then
 	echo "No PROJECT_FILE specified, looking for web projects..."
@@ -89,16 +98,5 @@ fi
 echo "Cleanup dotnet SDK"
 cleanup_dotnet $BUILD_DIR
 
-if [ -z "$PROCFILE_PATH:-" ]; then
-	echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
-	cp ${PROCFILE_PATH} ${BUILD_DIR}/Procfile
-else
-	if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile && [ ${PROJECT_FILE_OVERRIDES_PROCFILE:-false} = "false" ] ; then
-		echo "Using ${BUILD_DIR}/Procfile" | indent
-	else
-		first_project_name=$(basename ${proj[0]%.*})
-		echo "Auto-generating Procfile"
-		echo "Add web process to Procfile $first_project_name" | indent
-		echo -e "web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}" > ${BUILD_DIR}/Procfile
-	fi
-fi
+cp ${PROCFILE_PATH} ${BUILD_DIR}/Procfile
+echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
