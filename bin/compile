@@ -88,11 +88,16 @@ fi
 echo "Cleanup dotnet SDK"
 cleanup_dotnet $BUILD_DIR
 
-if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile && [ ${PROJECT_FILE_OVERRIDES_PROCFILE:-false} = "false" ] ; then
-	topic "WARNING"
-	echo "Be careful with custom Procfile" | indent
+if [ -z "$PROCFILE_PATH:-" ]; then
+	echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
+	cp ${PROCFILE_PATH} ${BUILD_DIR}/Procfile
 else
-	first_project_name=$(basename ${proj[0]%.*})
-	echo "Add web process to Procfile $first_project_name" | indent
-	echo -e "web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}" > ${BUILD_DIR}/Procfile
+	if [ -f ${BUILD_DIR}/Procfile ] && grep -q '^web:' ${BUILD_DIR}/Procfile && [ ${PROJECT_FILE_OVERRIDES_PROCFILE:-false} = "false" ] ; then
+		echo "Using ${BUILD_DIR}/Procfile" | indent
+	else
+		first_project_name=$(basename ${proj[0]%.*})
+		echo "Auto-generating Procfile"
+		echo "Add web process to Procfile $first_project_name" | indent
+		echo -e "web: cd \$HOME/heroku_output/${first_project_name} && ./${first_project_name}" > ${BUILD_DIR}/Procfile
+	fi
 fi
