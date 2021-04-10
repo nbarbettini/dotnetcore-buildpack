@@ -33,10 +33,6 @@ DOTNET_SDK_VERSION=${DOTNET_SDK_VERSION:-3.1.407}
 DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-3.1.13}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
 
-for file in ${BUILD_DIR}/*; do
-  echo "${file}"
-done
-
 if [ -z "${PROCFILE_PATH}" ]; then
 	echo "PROCFILE_PATH is required. Set environment variable in the heroku app."
 	exit 1
@@ -45,9 +41,7 @@ else
 	echo ${PROCFILE_PATH}
 fi
 
-test -f ${PROCFILE_PATH} && echo "${PROCFILE_PATH} exists."
-
-if [ -f ${PROCFILE_PATH} ]; then
+if ! [ -f ${PROCFILE_PATH} ]; then
 	echo "${PROCFILE_PATH} file does not exist. Please add it to repo."
 	exit 1
 fi
