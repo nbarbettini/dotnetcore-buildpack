@@ -50,6 +50,8 @@ export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
 
 cd $BUILD_DIR
 
+echo ${PROCFILE_PATH}
+
 if [ -f ${PROCFILE_PATH} ]; then
 	echo "${PROCFILE_PATH} file does not exist. Please add it to repo."
 	exit 1
