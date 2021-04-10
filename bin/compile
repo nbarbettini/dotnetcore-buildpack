@@ -34,7 +34,7 @@ DOTNET_RUNTIME_VERSION=${DOTNET_RUNTIME_VERSION:-3.1.13}
 BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
 
 for file in ${BUILD_DIR}/*; do
-  echo "${file##*/}"
+  echo "${file}"
 done
 
 if [ -z "${PROCFILE_PATH}" ]; then
