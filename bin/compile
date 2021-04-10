@@ -36,6 +36,14 @@ BUILD_CONFIGURATION=${BUILD_CONFIGURATION:-Release}
 if [ -z "${PROCFILE_PATH}" ]; then
 	echo "PROCFILE_PATH is required. Set environment variable in the heroku app."
 	exit 1
+else
+	PROCFILE_PATH=${BUILD_DIR}/${PROCFILE_PATH}
+	echo ${PROCFILE_PATH}
+fi
+
+if [ -f ${PROCFILE_PATH} ]; then
+	echo "${PROCFILE_PATH} file does not exist. Please add it to repo."
+	exit 1
 fi
 
 echo "Installing dotnet"
@@ -49,17 +57,6 @@ export PATH="${BUILD_DIR}/.heroku/dotnet:${PATH}"
 export NUGET_PACKAGES="${CACHE_DIR}/nuget/cache"
 
 cd $BUILD_DIR
-
-for file in ${BUILD_DIR}/*; do
-  echo "${file##*/}"
-done
-
-echo ${PROCFILE_PATH}
-
-if [ -f ${BUILD_DIR}/${PROCFILE_PATH} ]; then
-	echo "${PROCFILE_PATH} file does not exist. Please add it to repo."
-	exit 1
-fi
 
 if [ -z ${PROJECT_FILE:-} ]; then
 	echo "No PROJECT_FILE specified, looking for web projects..."
