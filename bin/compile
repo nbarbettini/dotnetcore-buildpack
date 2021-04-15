@@ -74,17 +74,15 @@ do
 	dotnet build $proj --configuration ${BUILD_CONFIGURATION} --runtime linux-x64 -v ${BUILD_VERBOSITY:-q}
 done
 
-if [ ${BUILD_PUBLISH:-true} = "false" ]; then
-	exit 0
+if [ ${BUILD_PUBLISH:-true} = "true" ]; then
+	for proj in $PROJECTS_TO_BUILD
+	do
+		PROJECT_NAME=$(basename ${proj%.*})
+
+		echo "dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
+		dotnet publish $proj --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
+	done
 fi
-
-for proj in $PROJECTS_TO_BUILD
-do
-	PROJECT_NAME=$(basename ${proj%.*})
-
-	echo "dotnet publish $proj --no-restore --no-build --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64"
-	dotnet publish $proj --no-restore --no-build --output ${BUILD_DIR}/heroku_output/${PROJECT_NAME} --configuration ${BUILD_CONFIGURATION} --runtime linux-x64
-done
 
 if [ ${CLEAN_AFTER_BUILD:-false} = "true" ]; then
 	SLN=$(find "${BUILD_DIR}" -maxdepth 2 -name *.sln | head -1)
