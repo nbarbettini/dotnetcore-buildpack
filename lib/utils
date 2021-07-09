@@ -75,3 +75,13 @@ function cleanup_dotnet() {
   rm -rf ${BUILD_DIR}/.heroku/dotnet
   rm -rf ${BUILD_DIR}/.heroku/dotnet-sdk
 }
+
+# Checks if an item is in an array
+# usage: in_array "needle" ("this is a haystack" "needle")
+function in_array() {
+  local needle="$1" arr="$2[@]" item
+  for item in "${!arr}"; do
+    [[ "${item}" == "${needle}" ]] && return 0
+  done
+  return 1
+}
