@@ -105,7 +105,7 @@ cp ${PROCFILE_PATH} ${BUILD_DIR}/Procfile
 echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
 
 # Whitelist of files to retain
-files_to_keep = ("${OUTPUT_DIR}" "${CACHE_DIR}" "${ENV_DIR}" "Procfile")
+files_to_keep=("${OUTPUT_DIR}" "${CACHE_DIR}" "${ENV_DIR}" "Procfile")
 echo "Doing an extra deep clean before slugifying" | indent
 # Loop through each file / directory and delete everythign not on the whitelist
 for file in $(ls)
