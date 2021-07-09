@@ -106,12 +106,16 @@ echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
 
 # Whitelist of files to retain
 files_to_keep=("${OUTPUT_DIR}" "${CACHE_DIR}" "${ENV_DIR}" "Procfile")
-echo "Doing an extra deep clean before slugifying" | indent
+echo "Doing an extra deep clean before slugifying"
 # Loop through each file / directory and delete everythign not on the whitelist
+
+echo "Keeping files: ${files_to_keep[@]}" 
+
 for file in $(ls)
 do
+	echo "Testing ${file}"
   if in_array "${file}" $files_to_keep; then
-    echo "Keeping removing ${file}" | indent
+    echo "Keeping ${file}" | indent
   else
     if [[ -d ${file} ]]; then
       echo "Removing directory ${file}" | indent
