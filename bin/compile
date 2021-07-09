@@ -110,7 +110,7 @@ echo "Doing an extra deep clean before slugifying" | indent
 # Loop through each file / directory and delete everythign not on the whitelist
 for file in $(ls)
 do
-  if [[ in_array "${file}" $files_to_keep ]]; then
+  if [[ $(in_array "${file}" $files_to_keep) -ne 1 ]]; then
     echo "Keeping removing ${file}" | indent
   else
     if [[ -d ${file} ]]; then
