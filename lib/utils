@@ -79,9 +79,6 @@ function cleanup_dotnet() {
 # Checks if an item is in an array
 # usage: in_array "needle" ("this is a haystack" "needle")
 function in_array() {
-  local needle="$1" arr="$2[@]" item
-  for item in "${!arr}"; do
-    [[ "${item}" == "${needle}" ]] && return 0
-  done
+  for item in "${@:2}"; do [[ "$item" == "$1" ]] && return 0; done
   return 1
 }
