@@ -104,8 +104,12 @@ cleanup_dotnet $BUILD_DIR
 cp ${PROCFILE_PATH} ${BUILD_DIR}/Procfile
 echo "Using Procfile specified by PROCFILE_PATH: $PROCFILE_PATH" | indent
 
+function full_path() {
+	echo "$(pwd -P)/$(basename $1)"
+}
+
 # Whitelist of files to retain
-files_to_keep=("${OUTPUT_DIR}" "${CACHE_DIR}" "${ENV_DIR}" "Procfile")
+files_to_keep=("${OUTPUT_DIR}" "${CACHE_DIR}" "${ENV_DIR}" $(full_path "Procfile"))
 echo "Doing an extra deep clean before slugifying"
 # Loop through each file / directory and delete everythign not on the whitelist
 
@@ -113,9 +117,9 @@ echo "Keeping files: ${files_to_keep[@]}"
 
 for file in $(ls)
 do
-	echo "Testing ${file}"
-  if in_array "${file}" $files_to_keep; then
-    echo "Keeping ${file}" | indent
+	echo "Testing $(full_path "${file}")"
+  if in_array "${file}" ${files_to_keep[@]}; then
+    echo "Skipping ${file}" | indent
   else
     if [[ -d ${file} ]]; then
       echo "Removing directory ${file}" | indent
