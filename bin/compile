@@ -118,7 +118,7 @@ echo "Keeping files: ${files_to_keep[@]}"
 for file in $(ls)
 do
 	echo "Testing $(full_path "${file}")"
-  if in_array "${file}" ${files_to_keep[@]}; then
+  if in_array "(full_path ${file})" ${files_to_keep[@]}; then
     echo "Skipping ${file}" | indent
   else
     if [[ -d ${file} ]]; then
