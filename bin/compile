@@ -120,7 +120,7 @@ echo "Keeping files: ${whitelist[@]}"
 
 local_files=( $(ls .) )
 for file in ${local_files[@]}; do
-  if [[ $(in_array "(full_path ${file})" ${whitelist[@]}) == "true" ]]; then
+  if [[ $(in_array "$(full_path ${file})" ${whitelist[@]}) == "true" ]]; then
     echo "Skipping ${file}" | indent
   else
     if [[ -d ${file} ]]; then
