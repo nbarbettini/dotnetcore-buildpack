@@ -75,3 +75,19 @@ function cleanup_dotnet() {
   rm -rf ${BUILD_DIR}/.heroku/dotnet
   rm -rf ${BUILD_DIR}/.heroku/dotnet-sdk
 }
+
+function full_path() {
+  echo "$(pwd -P)/$(basename $1)"
+}
+
+# Checks if an item is in an array
+# usage: in_array "needle" ("this is a haystack" "needle")
+function in_array() {
+  local needle=$1
+  shift
+  local haystack=$@
+
+  for element_ in ${haystack[@]}; do [[ "$needle" == "$element_" ]] && echo "true" && return 0; done
+  echo "false"
+  return 1
+}
